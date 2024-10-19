@@ -1,4 +1,3 @@
-// src/services/redditApi.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const redditApi = createApi({

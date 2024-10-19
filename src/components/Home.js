@@ -1,68 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import Lane from './Lane';
 import { useGetSubredditPostsQuery } from '../services/redditApi';
-import './Home.css';  // Import the CSS file
+import './Home.css'; 
 
 const Home = () => {
     const [lanes, setLanes] = useState(() => {
-        // Load from local storage
         const savedLanes = localStorage.getItem('lanes');
         return savedLanes ? JSON.parse(savedLanes) : [];
     });
 
     const [subredditInput, setSubredditInput] = useState('');
     const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // Success message state
+    const [successMessage, setSuccessMessage] = useState(''); 
     const [subredditToAdd, setSubredditToAdd] = useState('');
 
-    // Fetch subreddit data if a new subreddit is being added
-    const { data, error: apiError } = useGetSubredditPostsQuery(subredditToAdd, {
-        skip: !subredditToAdd, // Skip the query if subredditToAdd is empty
+    const { data, error: apiError, isFetching } = useGetSubredditPostsQuery(subredditToAdd, {
+        skip: !subredditToAdd,
     });
-
-    // Save lanes to local storage on change
-    useEffect(() => {
+    const saveLanesToLocalStorage = (lanes) => {
         localStorage.setItem('lanes', JSON.stringify(lanes));
-    }, [lanes]);
-
-    const addLane = (subreddit) => {
-        // Set the subreddit to add
-        setSubredditToAdd(subreddit);
-        setError(''); // Clear previous errors
-        setSuccessMessage(''); // Clear previous success messages
     };
 
-    useEffect(() => {
+    const addLane = () => {
+        setError('');
+        setSuccessMessage('');
+        if (!subredditInput) {
+            setError('Please enter a subreddit.');
+            return;
+        }
+
+        if (lanes.includes(subredditInput.toLowerCase())) {
+            setError(`Subreddit "${subredditInput}" is already added.`);
+            return;
+        }
+
+        setSubredditToAdd(subredditInput.toLowerCase());
+    };
+
+    if (!isFetching && subredditToAdd && !lanes.includes(subredditToAdd)) {
         if (apiError) {
-            setError(`Unable to find subreddit. Please try again.`);
-        } else if (data && !lanes.includes(subredditToAdd)) {
-            // Add new lane to the top of the list
-            setLanes((prevLanes) => [subredditToAdd, ...prevLanes]);
+            setError(`Unable to find subreddit "${subredditToAdd}". Please try again.`);
+        } else if (data) {
+            setLanes((prevLanes) => {
+                const newLanes = [subredditToAdd, ...prevLanes];
+                saveLanesToLocalStorage(newLanes);
+                setSubredditInput(' ');
+                return newLanes;
+            });
             setSuccessMessage(`Posts from ${subredditToAdd} added successfully!`);
-            setSubredditInput(''); // Clear input on successful add
         }
-    }, [data, apiError, lanes, subredditToAdd]);
 
-    // Automatically hide the success message after 3 seconds
+        setSubredditToAdd('');
+    }
     useEffect(() => {
-        if (successMessage) {
-            const timer = setTimeout(() => {
-                setSuccessMessage('');
-            }, 3000);
+        const timer = setTimeout(() => {
+            setError('');
+            setSuccessMessage('');
+        }, 2000);
 
-            return () => clearTimeout(timer);
-        }
-    }, [successMessage]);
-
-    const removeLane = (subreddit) => {
-        setLanes(lanes.filter((lane) => lane !== subreddit));
-    };
+        return () => clearTimeout(timer);
+    }, [error, successMessage]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (subredditInput) {
-            addLane(subredditInput);
-        }
+        addLane();
     };
 
     return (
@@ -73,12 +74,16 @@ const Home = () => {
                     value={subredditInput}
                     onChange={(e) => setSubredditInput(e.target.value)}
                     placeholder="Enter subreddit"
+                    required
                 />
-                <button type="submit">Add Lane</button>
+                <button type="submit" disabled={isFetching}>
+                    {isFetching ? 'Adding...' : 'Add Lane'}
+                </button>
             </form>
 
             {error && <p className="error-message">{error}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>} {/* Success message */}
+
+            {successMessage && <p className="success-message">{successMessage}</p>}
 
             <div className="lanes-container">
                 {lanes.length > 0 ? (
@@ -86,7 +91,10 @@ const Home = () => {
                         <Lane
                             key={index}
                             subreddit={subreddit}
-                            removeLane={removeLane}
+                            removeLane={() => {
+                                setLanes(lanes.filter((lane) => lane !== subreddit));
+                                saveLanesToLocalStorage(lanes.filter((lane) => lane !== subreddit));
+                            }}
                         />
                     ))
                 ) : (
@@ -98,89 +106,3 @@ const Home = () => {
 };
 
 export default Home;
-
-
-// import React, { useEffect, useState } from 'react';
-// import Lane from './Lane';
-// import { useGetSubredditPostsQuery } from '../services/redditApi';
-// import './Home.css';  // Import the CSS file
-
-// const Home = () => {
-//     const [lanes, setLanes] = useState(() => {
-//         // Load from local storage
-//         const savedLanes = localStorage.getItem('lanes');
-//         return savedLanes ? JSON.parse(savedLanes) : [];
-//     });
-
-//     const [subredditInput, setSubredditInput] = useState('');
-//     const [error, setError] = useState('');
-//     const [subredditToAdd, setSubredditToAdd] = useState('');
-
-//     // Fetch subreddit data if a new subreddit is being added
-//     const { data, error: apiError } = useGetSubredditPostsQuery(subredditToAdd, {
-//         skip: !subredditToAdd, // Skip the query if subredditToAdd is empty
-//     });
-
-//     // Save lanes to local storage on change
-//     useEffect(() => {
-//         localStorage.setItem('lanes', JSON.stringify(lanes));
-//     }, [lanes]);
-
-//     const addLane = (subreddit) => {
-//         // Set the subreddit to add
-//         setSubredditToAdd(subreddit);
-//         setError(''); // Clear previous errors
-//     };
-
-//     useEffect(() => {
-//         if (apiError) {
-//             setError(`Unable to find anything`);
-//         } else if (data && !lanes.includes(subredditToAdd)) {
-//             setLanes((prevLanes) => [...prevLanes, subredditToAdd]);
-//             setSubredditInput(''); // Clear input on successful add
-//         }
-//     }, [data, apiError, lanes, subredditToAdd]);
-
-//     const removeLane = (subreddit) => {
-//         setLanes(lanes.filter((lane) => lane !== subreddit));
-//     };
-
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         if (subredditInput) {
-//             addLane(subredditInput);
-//         }
-//     };
-
-//     return (
-//         <div className="home-container">
-//             <form onSubmit={handleSubmit}>
-//                 <input
-//                     type="text"
-//                     value={subredditInput}
-//                     onChange={(e) => setSubredditInput(e.target.value)}
-//                     placeholder="Enter subreddit"
-//                 />
-//                 <button type="submit">Add Lane</button>
-//             </form>
-
-//             {error && <p className="error-message">{error}</p>}
-
-//             <div className="lanes-container">
-//                 {lanes.length > 0 ? (
-//                     lanes.map((subreddit, index) => (
-//                         <Lane
-//                             key={index}
-//                             subreddit={subreddit}
-//                             removeLane={removeLane}
-//                         />
-//                     ))
-//                 ) : (
-//                     <p>No posts available. Add a subreddit to get started!</p>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Home;
