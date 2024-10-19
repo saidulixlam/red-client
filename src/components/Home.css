@@ -1,0 +1,68 @@
+/* Home.css */
+
+/* Basic layout */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    width: 250px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.lanes-container {
+    /* font-style: italic; */
+    color: #999; /* Gray color for the no lanes message */
+    text-align: center; /* Center align the message */
+    margin: 8px 0; 
+}
+.error-message {
+    color: red; /* Red color for errors */
+    font-weight: bold; /* Make it bold */
+    margin: 16px 0; /* Add some spacing */
+    text-align: center; /* Center align the message */
+}
+.success-message {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .lanes-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

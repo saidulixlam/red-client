@@ -1,0 +1,127 @@
+/* General styling for each lane */
+.lane {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    overflow: hidden; /* Prevent overflow of content */
+}
+
+.lane:hover {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.lane h2 {
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    color:black;
+    padding: 0 0.5rem;
+}
+
+.lane button {
+    background-color: #ff5a5f;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.lane button:hover {
+    background-color: #df7072;
+}
+
+/* List styling */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    text-align: left;
+    margin-bottom: 12px;
+    padding:4px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+/* Title and author styles */
+ul li h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+ul li p {
+    font-size: 1rem;
+    margin: 0 0 8px;
+    color: #333;
+}
+
+.author{
+    font-size: 0.8rem;
+    color: rgb(163, 131, 131);
+}
+
+/* Description section */
+.description-container {
+    position: relative; /* Contain the button */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Align items vertically */
+}
+
+ul li .description {
+    overflow: hidden; 
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    text-overflow: ellipsis;
+    margin-bottom: 8px; /* Spacing between text and button */
+}
+
+/* View More Button */
+ul li .view-more-btn {
+    background-color: transparent;
+    border: none;
+    color: #1e90ff;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    margin-top: auto; /* Align the button to the bottom */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .lanes-container {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .lane {
+        padding: 12px;
+        width: 100%; 
+        margin: 10px 0; 
+        box-sizing: border-box; 
+    }
+
+    ul li h3 {
+        font-size: 1.1rem;
+    }
+
+    ul li p {
+        font-size: 0.9rem;
+    }
+
+    .lane h2 {
+        font-size: 1.3rem;
+    }
+    
+}
