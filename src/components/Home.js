@@ -75,7 +75,9 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <form onSubmit={handleSubmit}>
+            <form 
+            className='form'
+            onSubmit={handleSubmit}>
                 <input
                     type="text"
                     ref={subredditInputRef} // Set ref here
