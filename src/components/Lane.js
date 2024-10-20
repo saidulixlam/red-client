@@ -16,19 +16,27 @@ const Lane = ({ subreddit, removeLane }) => {
             {data && (
                 <ul>
                     {data.data.children.map((post) => (
+                        <a style={{ textDecoration: 'none', color: 'inherit' }}
+                        href={`https://www.reddit.com${post.data.permalink}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <li key={post.data.id}>
-                            <h3>{post.data.title}</h3>
+                            
+                                <h3>{post.data.title}</h3>
+                            
                             <p className='author'>Author: {post.data.author}</p>
                             <p>Upvotes: {post.data.ups}</p>
                             <div className="description-container">
                                 <p
                                     id={`selftext-${post.data.id}`}
-                                    className="description" // Removed the expanded logic
+                                    className="description"
                                 >
                                     {post.data.selftext}
                                 </p>
                             </div>
                         </li>
+                        </a>
                     ))}
                 </ul>
             )}
